@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="/fragments/page_header :: pageHeader">
+</head>
+
+<body>
+
+<nav th:replace="fragments/page_navigation.html :: navigation">
+</nav>
+
+<div class="container">
+    <div class="row py-2">
+        <div class="col-12">
+            <a sec:authorize="hasRole('ADMIN')" class="btn btn-primary" th:href="@{/product/new}">Add Product</a>
+            <td><button type="button" class="btn btn-primary" th:onclick="showHideFilter('filterForm')">Show/Hide filters</button></td>
+        </div>
+        <div class="col-12">
+            <form style="display:none" id="filterForm"  method="get">
+                <input type="number" class="form-control" id="minPrice" name="minPrice" th:value="${param.minPrice}" placeholder="Enter minimum unit price">
+                <input type="number" class="form-control" id="maxPrice" name="maxPrice" th:value="${param.maxPrice}" placeholder="Enter maximum unit price">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </form>
+        </div>
+
+        <div class="col-12">
+            <table class="table table-bordered my-2">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col" th:replace="fragments/page_header :: sortHeader('Title', 'title')">Product title</th>
+                    <th scope="col" th:replace="fragments/page_header :: sortHeader('Category', 'category')">Product category</th>
+                    <th scope="col" th:replace="fragments/page_header :: sortHeader('Price', 'price')">Price</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${products.hasContent()}" th:each="product : ${products.content}">
+                    <td scope="row" th:text="${product.id}">1</td>
+                    <td th:text="${product.title}">N/A</td>
+                    <td th:text="${(product.category != null)?product.category.name:'N/A'}">N/A</td>
+                    <td th:text="${product.price}">price</td>
+                    <td>
+                        <a sec:authorize="hasRole('ADMIN')" class="btn btn-success" th:href="@{/product/{id}(id=${product.id})}"><i class="fas fa-edit"></i></a>
+                        <form sec:authorize="hasRole('ADMIN')" class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">
+                            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:unless="${products.hasContent()}" align="center"><td colspan="4">No Data Found</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li th:replace="fragments/page_navigation :: pageNavigation('prev', 'Previous', ${!products.hasPrevious()}, ${products.previousOrFirstPageable().getPageNumber() + 1})">Next</li>
+
+                    <li th:each="num : ${#numbers.sequence(1, products.totalPages)}"
+                        th:classappend="${num == products.number + 1} ? 'active'"
+                        class="page-item">
+                        <a th:replace="fragments/page_navigation :: navigationLink()"></a>
+                    </li>
+
+                    <li th:replace="fragments/page_navigation :: pageNavigation('next', 'Next', ${!products.hasNext()}, ${products.nextOrLastPageable().getPageNumber() + 1})">Next</li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript" th:src="@{/js/actions.js}"></script>
+
+</body>
+</html>
