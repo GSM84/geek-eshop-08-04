@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.geekbrains.controller.dto.RoleDto;
+import ru.geekbrains.controller.dto.UserDto;
+import ru.geekbrains.controller.param.UserListParams;
 import ru.geekbrains.persist.RoleRepository;
-import ru.geekbrains.service.UserService;
+import ru.geekbrains.service.CommonPagebleService;
 
 import javax.validation.Valid;
 import java.util.stream.Collectors;
@@ -24,10 +27,10 @@ public class RegisterController {
 
     private final RoleRepository roleRepository;
 
-    private final UserService userService;
+    private final CommonPagebleService<UserDto, UserListParams> userService;
 
     @Autowired
-    public RegisterController(RoleRepository roleRepository, UserService userService) {
+    public RegisterController(RoleRepository roleRepository, CommonPagebleService<UserDto, UserListParams>  userService) {
         this.roleRepository = roleRepository;
         this.userService = userService;
     }

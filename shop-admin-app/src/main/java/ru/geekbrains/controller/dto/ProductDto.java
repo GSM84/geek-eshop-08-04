@@ -1,6 +1,7 @@
-package ru.geekbrains.controller;
+package ru.geekbrains.controller.dto;
 
-import ru.geekbrains.persist.Category;
+import ru.geekbrains.persist.model.Brand;
+import ru.geekbrains.persist.model.Category;
 
 import java.math.BigDecimal;
 
@@ -14,14 +15,17 @@ public class ProductDto {
 
     private Category category;
 
+    private Brand brand;
+
     public ProductDto() {
     }
 
-    public ProductDto(Long id, String title, BigDecimal price, Category category) {
+    public ProductDto(Long id, String title, BigDecimal price, Category category, Brand brand) {
         this.id = id;
         this.title = title;
         this.price = price;
         this.category = category;
+        this.brand = brand;
     }
 
     public Long getId() {
@@ -54,5 +58,13 @@ public class ProductDto {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
     }
 }

@@ -1,4 +1,4 @@
-package ru.geekbrains.controller;
+package ru.geekbrains.controller.dto;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Set;

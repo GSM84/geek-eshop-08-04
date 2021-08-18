@@ -1,4 +1,6 @@
-package ru.geekbrains.persist;
+package ru.geekbrains.persist.model;
+
+import ru.geekbrains.persist.model.Role;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -24,12 +26,12 @@ public class User {
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<ru.geekbrains.persist.Role> role;
+    private Set<Role> role;
 
     public User() {
     }
 
-    public User(Long id, String name, Integer age, String password, Set<ru.geekbrains.persist.Role> roles) {
+    public User(Long id, String name, Integer age, String password, Set<Role> roles) {
         this.id = id;
         this.username = name;
         this.age = age;
@@ -69,11 +71,11 @@ public class User {
         this.password = password;
     }
 
-    public Set<ru.geekbrains.persist.Role> getRoles() {
+    public Set<Role> getRoles() {
         return role;
     }
 
-    public void setRoles(Set<ru.geekbrains.persist.Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.role = roles;
     }
 }

@@ -1,8 +1,8 @@
-package ru.geekbrains.controller;
+package ru.geekbrains.controller.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.geekbrains.persist.Category;
+import ru.geekbrains.persist.model.Category;
 
 @Component
 public class StringToCategoryConverter implements Converter<String, Category> {

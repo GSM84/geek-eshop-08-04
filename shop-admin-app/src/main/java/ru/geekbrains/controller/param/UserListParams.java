@@ -1,4 +1,4 @@
-package ru.geekbrains.controller;
+package ru.geekbrains.controller.param;
 
 public class UserListParams {
 

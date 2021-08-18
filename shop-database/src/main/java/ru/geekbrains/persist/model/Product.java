@@ -1,4 +1,4 @@
-package ru.geekbrains.persist;
+package ru.geekbrains.persist.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,11 +21,16 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public Product(Long _id, String _title, BigDecimal _price, Category category) {
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
+    public Product(Long _id, String _title, BigDecimal _price, Category category, Brand brand) {
         this.id = _id;
         this.title = _title;
         this.price = _price;
         this.category = category;
+        this.brand = brand;
     }
 
     public Product() {
@@ -61,5 +66,13 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
     }
 }

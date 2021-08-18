@@ -1,31 +1,28 @@
-package ru.geekbrains.persist;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package ru.geekbrains.persist.model;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "brand")
+public class Brand {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column
     private String name;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "role")
-    private List<User> users;
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
+    private Set<Product> productSet = new HashSet<>();
 
-    public Role() {
+    public Brand() {
     }
 
-    public Role(Long id, String name) {
+    public Brand(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -46,20 +43,20 @@ public class Role {
         this.name = name;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public Set<Product> getProductSet() {
+        return productSet;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setProductSet(Set<Product> productSet) {
+        this.productSet = productSet;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return id.equals(role.id) && name.equals(role.name);
+        Brand brand = (Brand) o;
+        return id.equals(brand.id) && name.equals(brand.name);
     }
 
     @Override

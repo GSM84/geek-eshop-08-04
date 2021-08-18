@@ -9,8 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import ru.geekbrains.service.RoleService;
-import ru.geekbrains.service.UserService;
+import ru.geekbrains.controller.dto.RoleDto;
+import ru.geekbrains.controller.dto.UserDto;
+import ru.geekbrains.controller.param.UserListParams;
+import ru.geekbrains.service.CommonPagebleService;
+import ru.geekbrains.service.CommonService;
 
 import javax.validation.Valid;
 
@@ -20,12 +23,12 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private final UserService userService;
+    private final CommonPagebleService<UserDto, UserListParams> userService;
 
-    private final RoleService roleService;
+    private final CommonService<RoleDto> roleService;
 
     @Autowired
-    public UserController(UserService userService, RoleService roleService) {
+    public UserController(CommonPagebleService<UserDto, UserListParams> userService, CommonService<RoleDto> roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -52,11 +55,9 @@ public class UserController {
     public String editUser(@PathVariable("id") Long id, Model model) {
         logger.info("Edit user page requested");
 
-        UserDto user = userService.findById(id).get();
-
+        model.addAttribute("roles", roleService.findAll());
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
-        model.addAttribute("roles", roleService.findAll());
 
         return "user_form";
     }
