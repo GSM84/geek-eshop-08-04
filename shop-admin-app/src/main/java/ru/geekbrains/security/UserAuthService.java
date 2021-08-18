@@ -24,7 +24,7 @@ public class UserAuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String _userName) throws UsernameNotFoundException {
-        ru.geekbrains.persist.User usr = userRepository.findByName(_userName).get();
+        ru.geekbrains.persist.model.User usr = userRepository.findByName(_userName).get();
 
         return userRepository.findByName(_userName)
                 .map(user -> new User(

@@ -1,9 +1,9 @@
 package ru.geekbrains.service;
 
 import org.springframework.data.domain.Page;
-import ru.geekbrains.controller.ProductDto;
-import ru.geekbrains.controller.ProductListParams;
-import ru.geekbrains.persist.Product;
+import ru.geekbrains.controller.dto.ProductDto;
+import ru.geekbrains.controller.param.ProductListParams;
+import ru.geekbrains.persist.model.Product;
 
 import java.util.List;
 import java.util.Optional;

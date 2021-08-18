@@ -6,9 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.geekbrains.controller.ProductDto;
-import ru.geekbrains.controller.ProductListParams;
+import ru.geekbrains.controller.dto.ProductDto;
+import ru.geekbrains.controller.param.ProductListParams;
 import ru.geekbrains.persist.*;
+import ru.geekbrains.persist.model.Product;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,10 +50,12 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Optional<ProductDto> findById(Long _id) {
         return productRepository.findById(_id).map(product -> new ProductDto(
-                product.getId()
-                ,product.getTitle()
+                  product.getId()
+                , product.getTitle()
                 , product.getPrice()
-                , product.getCategory()));
+                , product.getCategory()
+                , product.getBrand())
+        );
     }
 
     @Override
@@ -62,7 +65,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void save(ProductDto _product) {
-        Product prod = new Product(_product.getId(), _product.getTitle(), _product.getPrice(), _product.getCategory());
+        Product prod = new Product(_product.getId(), _product.getTitle(), _product.getPrice(), _product.getCategory(), _product.getBrand());
 
         productRepository.save(prod);
     }

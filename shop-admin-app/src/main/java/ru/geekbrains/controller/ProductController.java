@@ -9,7 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import ru.geekbrains.service.CategorySerrvice;
+import ru.geekbrains.controller.dto.ProductDto;
+import ru.geekbrains.controller.param.ProductListParams;
+import ru.geekbrains.persist.model.Brand;
+import ru.geekbrains.persist.model.Category;
+import ru.geekbrains.service.CommonService;
 import ru.geekbrains.service.ProductService;
 
 import javax.validation.Valid;
@@ -22,12 +26,15 @@ public class ProductController {
 
     private final ProductService productService;
 
-    private final CategorySerrvice categorySerrvice;
+    private final CommonService<Category> categoryService;
+
+    private final CommonService<Brand> brandService;
 
     @Autowired
-    public ProductController(ProductService _prodcutService, CategorySerrvice categorySerrvice) {
+    public ProductController(ProductService _prodcutService, CommonService<Category> categorySerrvice, CommonService<Brand> brandService) {
         this.productService = _prodcutService;
-        this.categorySerrvice = categorySerrvice;
+        this.categoryService = categorySerrvice;
+        this.brandService = brandService;
     }
 
     @GetMapping()
@@ -51,21 +58,35 @@ public class ProductController {
 
     @GetMapping("/new")
     public String newProductForm(Model _model){
-        logger.info("New product page requested.  " + categorySerrvice.findAll().size());
+        logger.info("New product page requested.  " + categoryService.findAll().size());
 
-        _model.addAttribute("categories", categorySerrvice.findAll());
+        _model.addAttribute("categories", categoryService.findAll());
+        _model.addAttribute("brands", brandService.findAll());
         _model.addAttribute("product", new ProductDto());
+
         return "product_form";
     }
 
     @PostMapping
     public String update(@Valid ProductDto _product, BindingResult result){
-        logger.info(String.format("Update product id-%s, title - %s, price - %s, category - %s",
-                _product.getId(), _product.getTitle(), _product.getPrice(), _product.getCategory().getName()));
+        logger.info(/*String.format("Update product id-%s, title - %s, price - %s, category - %s, brand_id - %s, name - %s",
+                _product.getId(),
+                _product.getTitle(),
+                _product.getPrice(),
+                _product.getCategory().getName()),
+                _product.getBrand().getId(),
+                _product.getBrand().getName()*/ "Some of parameters are incorrect"
+                );
 
         if(result.hasErrors()){
-            logger.info(String.format("Some of parameter values are incorrect id-%s, title - %s, price - %s, cat_id - %s, name - %s",
-                    _product.getId(), _product.getTitle(), _product.getPrice()), _product.getCategory().getId(), _product.getCategory().getName());
+            logger.info(/*String.format("Some of parameter values are incorrect id-%s, title - %s, price - %s, cat_id - %s, name - %s, brand_id - %s, name - %s",
+                    _product.getId(),
+                    _product.getTitle(),
+                    _product.getPrice()),
+                    _product.getCategory().getId(),
+                    _product.getCategory().getName(),
+                    _product.getBrand().getId(),
+                    _product.getBrand().getName()*/"Some of parameters are incorrect");
 
             return "product_form";
         }
@@ -84,7 +105,8 @@ public class ProductController {
         _model.addAttribute("product", productService.findById(_id)
                 .orElseThrow(() -> new NotFoundException(String.format("Product with id - %s not exists.", _id))));
 
-        _model.addAttribute("categories", categorySerrvice.findAll());
+        _model.addAttribute("categories", categoryService.findAll());
+        _model.addAttribute("brands", brandService.findAll());
 
         return "product_form";
     }
