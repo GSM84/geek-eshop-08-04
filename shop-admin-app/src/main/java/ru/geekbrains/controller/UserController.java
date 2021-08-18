@@ -55,11 +55,9 @@ public class UserController {
     public String editUser(@PathVariable("id") Long id, Model model) {
         logger.info("Edit user page requested");
 
-        UserDto user = userService.findById(id).get();
-
+        model.addAttribute("roles", roleService.findAll());
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
-        model.addAttribute("roles", roleService.findAll());
 
         return "user_form";
     }

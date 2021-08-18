@@ -1,8 +1,6 @@
 package ru.geekbrains.service;
 
 import org.springframework.data.domain.Page;
-import ru.geekbrains.controller.dto.UserDto;
-import ru.geekbrains.controller.param.UserListParams;
 
 import java.util.List;
 import java.util.Optional;
