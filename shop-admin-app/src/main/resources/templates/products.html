@@ -32,6 +32,7 @@
                     <th scope="col" th:replace="fragments/page_header :: sortHeader('Category', 'category')">Product category</th>
                     <th scope="col" th:replace="fragments/page_header :: sortHeader('Brand', 'brand')">Product category</th>
                     <th scope="col" th:replace="fragments/page_header :: sortHeader('Price', 'price')">Price</th>
+                    <th scope="col" >Picture</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -42,6 +43,9 @@
                     <td th:text="${(product.category != null)?product.category.name:'N/A'}">N/A</td>
                     <td th:text="${(product.brand != null)?product.brand.name:'N/A'}">N/A</td>
                     <td th:text="${product.price}">price</td>
+                    <td >
+                        <img th:if="${product.pictures.size() > 0}" th:src="@{/picture/{id}(id=${product.pictures.get(0)})}" height="50"
+                             alt="Some pict"></td>
                     <td>
                         <a sec:authorize="hasRole('ADMIN')" class="btn btn-success" th:href="@{/product/{id}(id=${product.id})}"><i class="fas fa-edit"></i></a>
                         <form sec:authorize="hasRole('ADMIN')" class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">

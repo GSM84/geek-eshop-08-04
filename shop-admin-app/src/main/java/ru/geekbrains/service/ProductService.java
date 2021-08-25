@@ -1,16 +1,25 @@
 package ru.geekbrains.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ru.geekbrains.controller.NotFoundException;
 import ru.geekbrains.controller.dto.ProductDto;
 import ru.geekbrains.controller.param.ProductListParams;
 import ru.geekbrains.persist.*;
+import ru.geekbrains.persist.model.Category;
+import ru.geekbrains.persist.model.Picture;
 import ru.geekbrains.persist.model.Product;
 
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,9 +29,20 @@ public class ProductService implements CommonPagebleService<ProductDto, ProductL
 
     private final ProductRepository productRepository;
 
+    private final CategoryRepository categoryRepository;
+
+    private final BrandRepository brandRepository;
+
+    private final PictureService pictureService;
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
+
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, PictureService pictureService, BrandRepository brandRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+        this.pictureService = pictureService;
+        this.brandRepository = brandRepository;
     }
 
     @Override
@@ -46,6 +66,7 @@ public class ProductService implements CommonPagebleService<ProductDto, ProductL
                             , product.getPrice()
                             , product.getCategory()
                             , product.getBrand()
+                            , product.getPictures().stream().map(Picture::getId).collect(Collectors.toList())
                     ));
         } else {
            return productRepository.findAll(spec, PageRequest.of(
@@ -57,6 +78,7 @@ public class ProductService implements CommonPagebleService<ProductDto, ProductL
                            , product.getPrice()
                            , product.getCategory()
                            , product.getBrand()
+                           , product.getPictures().stream().map(Picture::getId).collect(Collectors.toList())
                    ));
         }
 
@@ -75,14 +97,43 @@ public class ProductService implements CommonPagebleService<ProductDto, ProductL
 
     @Override
     public void deleteById(Long _id) {
+        pictureService.getFileList(pictureService.getPicturesByProduct(_id)).forEach(File::delete);
+
         productRepository.deleteById(_id);
     }
 
     @Override
-    public void save(ProductDto _product) {
-        Product prod = new Product(_product.getId(), _product.getTitle(), _product.getPrice(), _product.getCategory(), _product.getBrand());
+    @Transactional
+    public void save(ProductDto productDto) {
+        Product product = (productDto.getId() != null) ? productRepository.findById(productDto.getId())
+                .orElseThrow(() -> new NotFoundException("Product not found")) : new Product();
 
-        productRepository.save(prod);
+        Category category = categoryRepository.findById(productDto.getCategory().getId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        product.setTitle(productDto.getTitle());
+        product.setCategory(category);
+        product.setBrand(productDto.getBrand());
+        product.setPrice(productDto.getPrice());
+
+        if (productDto.getNewPictures() != null) {
+            Arrays.stream(productDto.getNewPictures())
+                    .filter(pic -> pic.getSize() > 0).forEach(newPicture -> {
+                        try {
+                            product.getPictures().add(new Picture(null,
+                                    newPicture.getOriginalFilename(),
+                                    newPicture.getContentType(),
+                                    pictureService.CreatePicture(newPicture.getBytes()),
+                                    product
+                            ));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    });
+        }
+
+        productRepository.save(product);
     }
 
     @Override
