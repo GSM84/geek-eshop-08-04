@@ -68,15 +68,12 @@ public class SecurityConfig {
             http
                     .authorizeRequests()
                     .antMatchers("/**/*.css", "/**/*.js").permitAll()
-                    .antMatchers("/register/**").permitAll()
-                    .antMatchers("/user/**").hasAnyRole("ADMIN")
-                    .antMatchers("/product/**").hasAnyRole("ADMIN")
-                    .antMatchers("/category/**").hasAnyRole("ADMIN")
-                    .antMatchers("/brand/**").hasAnyRole("ADMIN")
+                    .antMatchers("/login").permitAll()
+                    .antMatchers("/**").authenticated()
                     .and()
                     .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("/product")
+                    .defaultSuccessUrl("/user")
                     .and()
                     .exceptionHandling()
                     .accessDeniedPage("/access_denied");

@@ -12,7 +12,7 @@
 <div class="container">
     <div class="row py-2">
         <div class="col-12">
-            <form th:action="@{/product}" method="post" th:object="${product}">
+            <form th:action="@{/product}" method="post" th:object="${product}" enctype="multipart/form-data">
                 <input type="hidden" id="id" name="id" th:field="*{id}">
                 <div class="form-group">
                     <label>Product title</label>
@@ -43,9 +43,47 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label for="newPictures">Product image</label>
+                    <input th:field="*{newPictures}" class="form-control" type="file"
+                           id="newPictures" placeholder="Upload new product picture" multiple>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
+
+            <div class="col-12" >
+                <table class="table table-bordered my-2">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Picture name</th>
+                        <th scope="col">Small view</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pic : ${pictures}">
+                        <td align="center" th:text="${pic.id}">N/A</td>
+                        <td align="center" th:text="${pic.name}">N/A</td>
+                        <td align="center"><img th:src="@{/picture/{id}(id=${pic.id})}" height="150px"></td>
+                        <td>
+                            <form sec:authorize="hasRole('ADMIN')" class="d-inline" th:method="delete"
+                                  th:action="@{/picture/del(id=${pic.id}
+                                                          , storageId=${pic.storageId}
+                                                          , productId=${pic.product.id}
+                                                           )}">
+                                <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
+
     </div>
 </div>
 

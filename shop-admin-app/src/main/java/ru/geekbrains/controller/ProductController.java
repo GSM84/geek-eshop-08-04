@@ -15,6 +15,7 @@ import ru.geekbrains.persist.model.Brand;
 import ru.geekbrains.persist.model.Category;
 import ru.geekbrains.service.CommonPagebleService;
 import ru.geekbrains.service.CommonService;
+import ru.geekbrains.service.PictureService;
 
 import javax.validation.Valid;
 
@@ -30,11 +31,14 @@ public class ProductController {
 
     private final CommonService<Brand> brandService;
 
+    private final PictureService pictureService;
+
     @Autowired
-    public ProductController(CommonPagebleService<ProductDto, ProductListParams> _prodcutService, CommonService<Category> categorySerrvice, CommonService<Brand> brandService) {
+    public ProductController(CommonPagebleService<ProductDto, ProductListParams> _prodcutService, CommonService<Category> categorySerrvice, CommonService<Brand> brandService, PictureService pictureService) {
         this.productService = _prodcutService;
         this.categoryService = categorySerrvice;
         this.brandService = brandService;
+        this.pictureService = pictureService;
     }
 
     @GetMapping()
@@ -100,6 +104,7 @@ public class ProductController {
 
         _model.addAttribute("categories", categoryService.findAll());
         _model.addAttribute("brands", brandService.findAll());
+        _model.addAttribute("pictures", pictureService.getPicturesByProduct(_id));
         _model.addAttribute("product", productService.findById(_id)
                 .orElseThrow(() -> new NotFoundException(String.format("Product with id - %s not exists.", _id))));
 
