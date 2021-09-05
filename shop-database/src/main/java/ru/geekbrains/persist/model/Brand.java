@@ -1,5 +1,7 @@
 package ru.geekbrains.persist.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,6 +18,7 @@ public class Brand {
     @Column
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     private Set<Product> productSet = new HashSet<>();
 
