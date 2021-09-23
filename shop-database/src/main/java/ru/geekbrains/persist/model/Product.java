@@ -1,10 +1,21 @@
 package ru.geekbrains.persist.model;
 
+import org.springframework.data.jpa.repository.EntityGraph;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@NamedEntityGraph(
+    name = "product-list",
+        attributeNodes = {
+        @NamedAttributeNode("category"),
+        @NamedAttributeNode("brand"),
+        @NamedAttributeNode("pictures")
+    }
+    )
 @Entity
 @Table(name="product")
 public class Product {

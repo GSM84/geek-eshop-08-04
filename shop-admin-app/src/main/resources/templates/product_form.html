@@ -52,34 +52,21 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
-            <div class="col-12" >
-                <table class="table table-bordered my-2">
-                    <thead>
-                    <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Picture name</th>
-                        <th scope="col">Small view</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="pic : ${pictures}">
-                        <td align="center" th:text="${pic.id}">N/A</td>
-                        <td align="center" th:text="${pic.name}">N/A</td>
-                        <td align="center"><img th:src="@{/picture/{id}(id=${pic.id})}" height="150px"></td>
-                        <td>
-                            <form sec:authorize="hasRole('ADMIN')" class="d-inline" th:method="delete"
-                                  th:action="@{/picture/del(id=${pic.id}
-                                                          , storageId=${pic.storageId}
-                                                          , productId=${pic.product.id}
-                                                           )}">
-                                <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+            <div class="container-fluid mt-4">
+                <div class="card-columns" style="...">
+                    <div class="card" th:each="pic : ${pictures}">
+                       <form class="card-header" th:method="delete"
+                             th:action="@{/picture/del(id=${pic.id}
+                                                     , storageId=${pic.storageId}
+                                                     , productId=${pic.product.id}
+                                                      )}">
+                           Picture<button class="float-right"><i class="fa fa-times"></i></button>
+                       </form>
+                        <img class="card-img-bottom" th:src="@{/picture/{id}(id=${pic.id})}" width="40%">
+                    </div>
+                </div>
 
-                            </form>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+
             </div>
 
         </div>

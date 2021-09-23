@@ -1,7 +1,5 @@
 package ru.geekbrains.persist.model;
 
-import ru.geekbrains.persist.model.Role;
-
 import javax.persistence.*;
 import java.util.Set;
 
